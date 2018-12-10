@@ -1,7 +1,10 @@
 package objects;
 
-import tools.CSVReader;
+import tools.FormParser;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +13,13 @@ public class Group {
     private List<Task> unallocatedTasks;
     private String groupName;
 
-    public Group(String preferencesCSV) {
-        CSVReader.digestCSV(preferencesCSV);
+    public Group(String preferencesCSV, String name) throws IOException {
+        personTasksMap = new HashMap<>();
+        for (Person p : FormParser.getPreferencesFromCSV(preferencesCSV)) {
+            personTasksMap.put(p, new ArrayList<>());
+        }
+        groupName = name;
+        unallocatedTasks = new ArrayList<>();
     }
 
     public void addTasks(List<Task> newTasks) {

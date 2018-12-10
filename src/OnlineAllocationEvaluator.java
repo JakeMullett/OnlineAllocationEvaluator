@@ -5,6 +5,6 @@ public class OnlineAllocationEvaluator {
      * start from scratch with just the preferences CSV.
      */
     public static void main(String[] args) {
-        //use some command line library
+
     }
 }
