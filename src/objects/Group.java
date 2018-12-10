@@ -8,6 +8,7 @@ import java.util.Map;
 public class Group {
     private Map<Person, List<Task>> personTasksMap;
     private List<Task> unallocatedTasks;
+    private String groupName;
 
     public Group(String preferencesCSV) {
         CSVReader.digestCSV(preferencesCSV);
@@ -36,4 +37,7 @@ public class Group {
     }
 
 
+    public String getGroupName() {
+        return groupName;
+    }
 }
