@@ -7,16 +7,12 @@ import objects.Task;
 import java.util.*;
 
 public class RandomAllocation extends AllocationAlgorithm {
-    private String name;
-
-    public RandomAllocation(String algName) {
-        super(algName);
+    public RandomAllocation() {
+        super("Random");
     }
 
+    @Override
     protected Map<Person, List<Task>> determineAllocations(Group group) {
-        if (group.getPersonTasksMap() == null || group.getPersonTasksMap().isEmpty() || group.getUnallocatedTasks().isEmpty()) {
-            return null;
-        }
         List<Person> personList = new ArrayList(group.getPersonTasksMap().keySet());
         Map<Person, List<Task>> personAllocationsMap = new HashMap();
         Random rand = new Random();
