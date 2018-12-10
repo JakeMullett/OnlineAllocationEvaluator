@@ -1,19 +1,22 @@
 package objects;
 
+import java.util.Map;
+
 public class Person {
     private String name;
-    private Preferences prefs;
+    private Map<TaskType, Double> preferences;
 
-    public Person(String newName, Preferences preferences) {
+    public Person(String newName, Map<TaskType, Double> prefs) {
         name = newName;
-        prefs = preferences;
-    }
-
-    public Preferences getPrefs() {
-        return prefs;
+        preferences = prefs;
     }
 
     public String getName() {
         return name;
     }
+
+    public Double getPreference(TaskType task) {
+        return preferences.get(task);
+    }
+
 }
