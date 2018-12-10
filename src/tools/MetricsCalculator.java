@@ -14,7 +14,7 @@ public class MetricsCalculator {
     }
 
     public static double[] calculateBothEnvies(Person p1, Person p2, Group group) {
-        Map<Person, List<Task>> allocations = group.getAllocatedTasks();
+        Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         List<Task> p1Tasks = allocations.getOrDefault(p1, new ArrayList<>());
         List<Task> p2Tasks = allocations.getOrDefault(p2, new ArrayList<>());
         double p1Disutil1 = 0.0, p2Disutil1 = 0.0, p1Disutil2 = 0.0, p2Disutil2 = 0.0;
@@ -30,7 +30,7 @@ public class MetricsCalculator {
     }
 
     public static double calculateTotalEnvy(Group group) {
-        Map<Person, List<Task>> allocations = group.getAllocatedTasks();
+        Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         Person[] people = getPeople(allocations);
         double totalEnvy = 0.0;
         for (int i = 0; i<people.length-1; i++) {
@@ -44,7 +44,7 @@ public class MetricsCalculator {
     }
 
     public static double calculateTotalDisutility(Group group) {
-        Map<Person, List<Task>> allocations = group.getAllocatedTasks();
+        Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         Person[] people = getPeople(allocations);
         double disUtility = 0.0;
         for (Person p : people) {
@@ -56,7 +56,7 @@ public class MetricsCalculator {
     }
 
     public static double[][] calculateEnvyGraph(Group group) {
-        Map<Person, List<Task>> allocations = group.getAllocatedTasks();
+        Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         Person[] people = MetricsCalculator.getPeople(allocations);
         double[][] zValues = new double[people.length-1][people.length-1];
         for (int i = 0; i<people.length; i++) {

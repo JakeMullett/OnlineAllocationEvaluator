@@ -19,7 +19,7 @@ public class EnvyGrapher {
     public static void graph(Group group, String algorithmName) {
         String fileName = group.getGroupName() + algorithmName + ".jpg";
         File fileDest = new File(fileName);
-        Map<Person, List<Task>> allocations = group.getAllocatedTasks();
+        Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         Person[] people = getPeople(allocations);
         double[][] zValues = new double[allocations.size()-1][allocations.size()-1];
         HeatChart hc = new HeatChart(zValues, -20, 20);
