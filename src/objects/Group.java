@@ -10,6 +10,7 @@ public class Group {
 
     private Map<Person, List<Task>> allocatedTasks;
     private List<Task> unallocatedTasks;
+    private String groupName;
 
     public Group(String preferencesCSV) {
         CSVReader.digestCSV(preferencesCSV);
@@ -34,4 +35,7 @@ public class Group {
         return allocatedTasks;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
 }
