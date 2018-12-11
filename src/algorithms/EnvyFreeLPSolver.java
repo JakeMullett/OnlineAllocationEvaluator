@@ -8,7 +8,7 @@ import edu.harvard.econcs.jopt.solver.mip.Variable;
 /**
  * Uses linear programming to determine proper fractional allocations of items in a batch.
  */
-public abstract class EnvyFreeLPSolver extends LPSolver {
+public class EnvyFreeLPSolver extends LPSolver {
 
     public EnvyFreeLPSolver() {
         super("Envy Free");

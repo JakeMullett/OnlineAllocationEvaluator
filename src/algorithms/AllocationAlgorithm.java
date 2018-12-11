@@ -12,7 +12,7 @@ public abstract class AllocationAlgorithm {
     private String name;
 
     public AllocationAlgorithm(String algName) {
-        this.name = name;
+        name = algName;
     }
 
     public boolean assignTasks(Group group) {

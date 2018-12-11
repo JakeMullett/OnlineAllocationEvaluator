@@ -13,6 +13,7 @@ import tools.FormParser;
 
 import java.io.*;
 import java.lang.reflect.Type;
+
 import com.google.gson.reflect.TypeToken;
 
 import java.text.ParseException;
@@ -51,7 +52,8 @@ public class OnlineAllocationEvaluator {
                 int timeSteps = 200, groupSize = newGroup.getPersonTasksMap().size();
                 groupMap = instantiateAlgorithms(newGroup, timeSteps, groupSize, gson);
             } else {
-                Type type = new TypeToken<Map<AllocationAlgorithm, Group>>(){}.getType();
+                Type type = new TypeToken<Map<AllocationAlgorithm, Group>>() {
+                }.getType();
                 groupMap = gson.fromJson(new FileReader(preferenceFilename), type);
             }
 
@@ -89,9 +91,10 @@ public class OnlineAllocationEvaluator {
     }
 
     private static Map<AllocationAlgorithm, Group> instantiateAlgorithms(Group group, int timeSteps, int numPeople, Gson gson) {
-        AllocationAlgorithm[] algs = {new RandomAllocation()};//, new GreedySingleAllocation(), new OnlineSingleAllocation(timeSteps, numPeople)};
+        AllocationAlgorithm[] algs = {new LPAllocationAlgorithm(new EgalitarianEquivalentLPSolver())};//, new GreedySingleAllocation(), new OnlineSingleAllocation(timeSteps, numPeople)};
         HashMap<AllocationAlgorithm, Group> groupHashMap = new HashMap<>();
-        Type type = new TypeToken<Group>(){}.getType();
+        Type type = new TypeToken<Group>() {
+        }.getType();
         for (AllocationAlgorithm alg : algs) {
             Group curGroup = gson.fromJson(gson.toJson(group, type), type); // using Gson to deep copy, ez
             alg.assignTasks(curGroup);

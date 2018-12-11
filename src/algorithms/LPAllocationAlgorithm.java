@@ -4,6 +4,7 @@ import objects.Group;
 import objects.Person;
 import objects.Task;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,9 +16,9 @@ import java.util.Map;
 public class LPAllocationAlgorithm extends AllocationAlgorithm {
     private LPSolver lpSolver;
 
-    public LPAllocationAlgorithm(LPSolver lpSolver) {
-        super("LP - " + lpSolver.getName());
-        lpSolver = lpSolver;
+    public LPAllocationAlgorithm(LPSolver lpSolverImpl) {
+        super("LP - " + lpSolverImpl.getName());
+        lpSolver = lpSolverImpl;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class LPAllocationAlgorithm extends AllocationAlgorithm {
         for (int i = 0; i < unallocatedTasks.size(); i++) {
             Task t = unallocatedTasks.get(i);
             Person p = personList.get(integralAllocations[i]);
-            if(!personAllocationsMap.containsKey(p)) {
+            if (!personAllocationsMap.containsKey(p)) {
                 personAllocationsMap.put(p, new ArrayList<>());
             }
             personAllocationsMap.get(p).add(t);
@@ -49,6 +50,7 @@ public class LPAllocationAlgorithm extends AllocationAlgorithm {
                 sum += fractionalAllocations[i][l];
                 if (sum > random) {
                     integralAllocations[l] = i;
+                    break;
                 }
             }
         }

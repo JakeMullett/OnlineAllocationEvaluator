@@ -20,9 +20,9 @@ public class OnlineSingleAllocation extends AllocationAlgorithm {
     private double s;
     private double C;
 
-    public OnlineSingleAllocation(int timeSteps, int numPeople) {
+    public OnlineSingleAllocation(int maxTimeSteps, int numPeople) {
         super("Online Single");
-        T = timeSteps;
+        T = maxTimeSteps;
         n = numPeople;
         lambda = 10 * Math.sqrt(T * Math.log(n) / n);
         s = Math.sqrt(2 * Math.log(1 + (n * Math.log(n) / T)));
@@ -31,7 +31,7 @@ public class OnlineSingleAllocation extends AllocationAlgorithm {
 
     @Override
     protected Map<Person, List<Task>> determineAllocations(Group group) {
-        List<Person> personList = new ArrayList(group.getPersonTasksMap().keySet());
+        List<Person> personList = new ArrayList<>(group.getPersonTasksMap().keySet());
         int t = 0;
         for (Person p : group.getPersonTasksMap().keySet()) {
             t += group.getPersonTasksMap().get(p).size();
@@ -39,7 +39,7 @@ public class OnlineSingleAllocation extends AllocationAlgorithm {
         if (t > T) {
             T *= 2;
         }
-        Map<Person, List<Task>> personAllocationMap = new HashMap();
+        Map<Person, List<Task>> personAllocationMap = new HashMap<>();
         double[][] envyGraph = MetricsCalculator.calculateEnvyGraph(group);
         for (Task task : group.getUnallocatedTasks()) {
             int bestPerson = -1;
@@ -52,7 +52,7 @@ public class OnlineSingleAllocation extends AllocationAlgorithm {
             if (t > T) {
                 T *= 2;
             }
-            for (int i = 0; i < personList.size(); i--) {
+            for (int i = 0; i < personList.size(); i++) {
                 for (int j = 0; j < personList.size(); j++) {
                     envyGraph[i][j] += disutilities[i];
                     envyGraph[j][i] -= disutilities[j];
@@ -83,7 +83,7 @@ public class OnlineSingleAllocation extends AllocationAlgorithm {
     private double calcPotential(double[][] envyGraph, int t) {
         double potential = 0;
         for (int i = 0; i < envyGraph.length; i++) {
-            for(int j = 0; j < envyGraph[i].length; j++) {
+            for (int j = 0; j < envyGraph[i].length; j++) {
                 if (i == j) {
                     continue;
                 }

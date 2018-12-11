@@ -21,8 +21,8 @@ public abstract class LPSolver {
     protected Variable[][] x; // v[i][l] is fractional amount to allocated to person l
     protected IMIP mip;
 
-    public LPSolver(String name) {
-        name = name;
+    public LPSolver(String lpName) {
+        name = lpName;
     }
 
     public void buildMIP(List<Person> personList, List<Task> unallocatedTasks) {
