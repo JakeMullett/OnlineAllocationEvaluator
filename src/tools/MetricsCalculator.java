@@ -23,7 +23,7 @@ public class MetricsCalculator {
             p1Disutil2 += p2.getPreference(task.getType());
         }
         for (Task task : p2Tasks) {
-            p2Disutil2 += p1.getPreference(task.getType());
+            p2Disutil1 += p1.getPreference(task.getType());
             p2Disutil2 += p2.getPreference(task.getType());
         }
         return new double[] {p1Disutil1 - p2Disutil1, p1Disutil2 - p2Disutil2};
@@ -58,7 +58,7 @@ public class MetricsCalculator {
     public static double[][] calculateEnvyGraph(Group group) {
         Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         Person[] people = MetricsCalculator.getPeople(allocations);
-        double[][] zValues = new double[people.length-1][people.length-1];
+        double[][] zValues = new double[people.length][people.length];
         for (int i = 0; i<people.length; i++) {
             for (int j = i; j<people.length; j++) {
                 Person p1 = people[i], p2 = people[j];

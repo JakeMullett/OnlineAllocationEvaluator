@@ -34,19 +34,29 @@ public class FormParser {
         return preferences;
     }
 
-    public static List<Task> getTasksFromCSV(String filename) throws IOException, ParseException {
+    public static List<Task> getAllTasksFromCSV(String filename)  throws IOException, ParseException {
         ArrayList<Task> tasks = new ArrayList<>();
+        for (List<Task> taskList : getBatchedTasksfromCSV(filename)) {
+            tasks.addAll(taskList);
+        }
+        return tasks;
+    }
+
+    public static List<List<Task>> getBatchedTasksfromCSV(String filename) throws IOException, ParseException {
+        List<List<Task>> tasks = new ArrayList<>();
         CSVReader reader = new CSVReader(new FileReader(filename));
         String[] columnNames = reader.readNext();
         Map<TaskType, Integer> columnMapping = mapColumnsToTaskTypes(columnNames);
         String [] nextLine;
         while ((nextLine = reader.readNext()) != null) {
+            ArrayList<Task> batchOfTasks = new ArrayList<>();
             Date date = CSV_DATE_FORMAT.parse(nextLine[DATE_COL]);
             for (Map.Entry<TaskType, Integer> col : columnMapping.entrySet()) {
                 int numTask = Integer.parseInt(nextLine[col.getValue()]);
                 for (int i = 0; i < numTask; i++)
-                    tasks.add(new Task(col.getKey(), date));
+                    batchOfTasks.add(new Task(col.getKey(), date));
             }
+            tasks.add(batchOfTasks);
         }
         return tasks;
     }

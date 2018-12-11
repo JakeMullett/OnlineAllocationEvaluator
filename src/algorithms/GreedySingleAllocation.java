@@ -31,7 +31,7 @@ public class GreedySingleAllocation extends AllocationAlgorithm {
             for (int i = 0; i < personList.size(); i++) {
                 disutilities[i] = personList.get(i).getPreference(task.getType());
             }
-            for (int i = 0; i < personList.size(); i--) {
+            for (int i = 0; i < personList.size(); i++) {
                 for (int j = 0; j < personList.size(); j++) {
                     envyGraph[i][j] += disutilities[i];
                     envyGraph[j][i] -= disutilities[j];

@@ -12,6 +12,10 @@ public enum TaskType {
         return this.formName;
     }
 
+    public String toString() {
+        return this.formName;
+    }
+
     // enum constructor - cannot be public or protected
     TaskType(String name)
     {

@@ -22,6 +22,8 @@ public class Group {
         unallocatedTasks = new ArrayList<>();
     }
 
+    public Group() {}
+
     public void addTasks(List<Task> newTasks) {
         unallocatedTasks.addAll(newTasks);
     }
@@ -44,6 +46,17 @@ public class Group {
         return unallocatedTasks;
     }
 
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setPersonTasksMap(Map<Person, List<Task>> personTasksMap) {
+        this.personTasksMap = personTasksMap;
+    }
+
+    public void setUnallocatedTasks(List<Task> unallocatedTasks) {
+        this.unallocatedTasks = unallocatedTasks;
+    }
 
     public String getGroupName() {
         return groupName;

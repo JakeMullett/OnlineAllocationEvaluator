@@ -6,6 +6,8 @@ public class Task {
     private TaskType type;
     private Date date;
 
+    public Task() {}
+
     public Task(TaskType tType, Date taskDate) {
         type = tType;
         date = taskDate;

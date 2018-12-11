@@ -21,7 +21,7 @@ public class EnvyGrapher {
         File fileDest = new File(fileName);
         Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         Person[] people = getPeople(allocations);
-        double[][] zValues = new double[allocations.size()-1][allocations.size()-1];
+        double[][] zValues = MetricsCalculator.calculateEnvyGraph(group);
         HeatChart hc = new HeatChart(zValues, -20, 20);
         hc.setXValues(people);
         hc.setYValues(people);
