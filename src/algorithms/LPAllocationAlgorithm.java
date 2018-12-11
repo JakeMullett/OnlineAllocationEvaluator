@@ -4,7 +4,6 @@ import objects.Group;
 import objects.Person;
 import objects.Task;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

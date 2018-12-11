@@ -2,6 +2,5 @@
 *.jar
 out/
 *.jpg
-*.csv
 *.json
 
