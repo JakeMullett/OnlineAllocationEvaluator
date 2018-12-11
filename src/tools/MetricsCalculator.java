@@ -26,7 +26,7 @@ public class MetricsCalculator {
             p2Disutil1 += p1.getPreference(task.getType());
             p2Disutil2 += p2.getPreference(task.getType());
         }
-        return new double[] {p1Disutil1 - p2Disutil1, p1Disutil2 - p2Disutil2};
+        return new double[] {p1Disutil1 - p2Disutil1, p2Disutil2 - p1Disutil2};
     }
 
     public static double calculateTotalEnvy(Group group) {
@@ -34,7 +34,7 @@ public class MetricsCalculator {
         Person[] people = getPeople(allocations);
         double totalEnvy = 0.0;
         for (int i = 0; i < people.length - 1; i++) {
-            for (int j = i + i; j < people.length; j++) {
+            for (int j = i + 1; j < people.length; j++) {
                 Person p1 = people[i], p2 = people[j];
                 double[] bothEnvies = calculateBothEnvies(p1, p2, group);
                 totalEnvy += bothEnvies[0] + bothEnvies[1];
@@ -81,7 +81,7 @@ public class MetricsCalculator {
         Person[] people = getPeople(allocations);
         double maxEnvy = 0.0;
         for (int i = 0; i < people.length - 1; i++) {
-            for (int j = i + i; j < people.length; j++) {
+            for (int j = i + 1; j < people.length; j++) {
                 Person p1 = people[i], p2 = people[j];
                 double[] bothEnvies = calculateBothEnvies(p1, p2, group);
                 maxEnvy = Math.max(maxEnvy, bothEnvies[0]);

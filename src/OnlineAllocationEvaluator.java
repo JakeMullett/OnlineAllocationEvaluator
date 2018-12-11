@@ -85,8 +85,11 @@ public class OnlineAllocationEvaluator {
             for (Map.Entry<String, Group> entry : groupMap.entrySet()) {
                 EnvyGrapher.graph(entry.getValue(), entry.getKey());
                 String disutility = "Total disutility for algorithm " + entry.getKey() + " is: " + MetricsCalculator.calculateTotalDisutility(entry.getValue())+ "\n";
+                String avgEnvy = "Average pairwise envy for algorithm " + entry.getKey() + " is: " + MetricsCalculator.calculateTotalEnvy(entry.getValue())/entry.getValue().getPersonTasksMap().size()+ "\n";
                 String pwEnvy = "Maximum pairwise envy for algorithm " + entry.getKey() + " is: " + MetricsCalculator.getMaxEnvy(entry.getValue())+ "\n\n";
+
                 manifest.write(disutility.getBytes());
+                manifest.write(avgEnvy.getBytes());
                 manifest.write(pwEnvy.getBytes());
             }
             manifest.close();
