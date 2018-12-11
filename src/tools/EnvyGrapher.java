@@ -23,7 +23,8 @@ public class EnvyGrapher {
         Person[] people = getPeople(allocations);
         double[][] zValues = MetricsCalculator.calculateEnvyGraph(group);
         removeNegatives(zValues);
-        HeatChart hc = new HeatChart(zValues, 0, 20);
+        int max = MetricsCalculator.getMaxEnvy(group).intValue();
+        HeatChart hc = new HeatChart(zValues, 0, max);
         hc.setXValues(people);
         hc.setYValues(people);
         hc.setChartMargin(50);

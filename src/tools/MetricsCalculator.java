@@ -75,4 +75,19 @@ public class MetricsCalculator {
         int len = peopleSet.size();
         return peopleSet.toArray(new Person[len]);
     }
+
+    public static Double getMaxEnvy(Group group) {
+        Map<Person, List<Task>> allocations = group.getPersonTasksMap();
+        Person[] people = getPeople(allocations);
+        double maxEnvy = 0.0;
+        for (int i = 0; i < people.length - 1; i++) {
+            for (int j = i + i; j < people.length; j++) {
+                Person p1 = people[i], p2 = people[j];
+                double[] bothEnvies = calculateBothEnvies(p1, p2, group);
+                maxEnvy = Math.max(maxEnvy, bothEnvies[0]);
+                maxEnvy = Math.max(maxEnvy, bothEnvies[1]);
+            }
+        }
+        return maxEnvy;
+    }
 }

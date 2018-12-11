@@ -15,6 +15,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 
 import com.google.gson.reflect.TypeToken;
+import tools.MetricsCalculator;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -24,6 +25,14 @@ import java.util.Map;
 public class OnlineAllocationEvaluator {
 
     /*
+     * This method instantiates all of the algorithims which will be assesed in each run.
+     */
+    private static AllocationAlgorithm[] getAlgorithms(int timeSteps, int numPeople) {
+        return new AllocationAlgorithm[]{new LPAllocationAlgorithm(new EgalitarianEquivalentLPSolver()), new GreedySingleAllocation(), new OnlineSingleAllocation(timeSteps, numPeople),
+                new LPAllocationAlgorithm(new EnvyFreeLPSolver()), new RandomAllocation()};
+    }
+
+    /*
      * This is going to be the main class. It is going to be a command line program
      * where you can enter in the current allocations and preferences and new tasks or
      * start from scratch with just the preferences CSV.
@@ -31,14 +40,14 @@ public class OnlineAllocationEvaluator {
     public static void main(String[] args) throws ArgumentParserException, IOException, ParseException {
         try {
             Namespace arguments = getArgs(args);
-            System.out.println(arguments);
             String preferenceFilename = arguments.getString("pref_filename");
             String taskFilename = arguments.getString("task_filename");
             boolean jsonInput = arguments.getString("pref_input").equals("json");
             boolean allTasksAtOnce = arguments.getBoolean("batched");
             String groupName = arguments.getString("name");
 
-            Map<AllocationAlgorithm, Group> groupMap;
+            Map<String, AllocationAlgorithm> algNameMap;
+            Map<String, Group> groupMap;
             Gson gson = new GsonBuilder()
                     .disableHtmlEscaping()
                     .setPrettyPrinting()
@@ -46,28 +55,41 @@ public class OnlineAllocationEvaluator {
                     .enableComplexMapKeySerialization()
                     .create();
 
-            if (!jsonInput) {
+            if (jsonInput) {
+                Type type = new TypeToken<Map<String, Group>>(){}.getType();
+                groupMap = gson.fromJson(new FileReader(preferenceFilename), type);
+            } else {
                 // We are creating a new set of preferences.
                 Group newGroup = new Group(preferenceFilename, groupName);
-                int timeSteps = 200, groupSize = newGroup.getPersonTasksMap().size();
-                groupMap = instantiateAlgorithms(newGroup, timeSteps, groupSize, gson);
-            } else {
-                Type type = new TypeToken<Map<AllocationAlgorithm, Group>>() {
-                }.getType();
-                groupMap = gson.fromJson(new FileReader(preferenceFilename), type);
+                groupMap = generateGroupMap(newGroup, gson);
             }
 
+
+            int numPeople = groupMap.entrySet().iterator().next().getValue().getPersonTasksMap().size(); //oh god
+            AllocationAlgorithm[] algorithms = getAlgorithms(200, numPeople);
+            /*
+             * Run each algorithm, batched if the flag is set otherwise all incoming tasks at once.
+             */
             if (allTasksAtOnce) {
-                evalAlgorithms(groupMap, FormParser.getAllTasksFromCSV(taskFilename));
+                evalAlgorithms(groupMap, algorithms, FormParser.getAllTasksFromCSV(taskFilename));
             } else {
                 for (List<Task> tasks : FormParser.getBatchedTasksfromCSV(taskFilename)) {
-                    evalAlgorithms(groupMap, tasks);
+                    evalAlgorithms(groupMap, algorithms, tasks);
                 }
             }
 
-            for (Map.Entry<AllocationAlgorithm, Group> entry : groupMap.entrySet()) {
-                EnvyGrapher.graph(entry.getValue(), entry.getKey().getName());
+            /*
+             * Graph each algorithm's pairwise envy.
+             */
+            FileOutputStream manifest = new FileOutputStream(new File(groupName + "manifest.txt"));
+            for (Map.Entry<String, Group> entry : groupMap.entrySet()) {
+                EnvyGrapher.graph(entry.getValue(), entry.getKey());
+                String disutility = "Total disutility for algorithm " + entry.getKey() + " is: " + MetricsCalculator.calculateTotalDisutility(entry.getValue())+ "\n";
+                String pwEnvy = "Maximum pairwise envy for algorithm " + entry.getKey() + " is: " + MetricsCalculator.getMaxEnvy(entry.getValue())+ "\n\n";
+                manifest.write(disutility.getBytes());
+                manifest.write(pwEnvy.getBytes());
             }
+            manifest.close();
 
             // save in json
             String json = gson.toJson(groupMap);
@@ -90,24 +112,24 @@ public class OnlineAllocationEvaluator {
         return parser.parseArgs(args);
     }
 
-    private static Map<AllocationAlgorithm, Group> instantiateAlgorithms(Group group, int timeSteps, int numPeople, Gson gson) {
-        AllocationAlgorithm[] algs = {new LPAllocationAlgorithm(new EgalitarianEquivalentLPSolver())};//, new GreedySingleAllocation(), new OnlineSingleAllocation(timeSteps, numPeople)};
-        HashMap<AllocationAlgorithm, Group> groupHashMap = new HashMap<>();
-        Type type = new TypeToken<Group>() {
-        }.getType();
-        for (AllocationAlgorithm alg : algs) {
-            Group curGroup = gson.fromJson(gson.toJson(group, type), type); // using Gson to deep copy, ez
-            alg.assignTasks(curGroup);
-            groupHashMap.put(alg, curGroup);
+    private static Map<String, Group> generateGroupMap(Group group, Gson gson) {
+        Type type = new TypeToken<Group>(){}.getType();
+        String json = gson.toJson(group, type);
+        Map<String, Group> map = new HashMap<>();
+        for (AllocationAlgorithm alg : getAlgorithms(0,0)) {
+            Group curGroup = gson.fromJson(json, type); // using Gson to deep copy, ez
+            map.put(alg.getName(), curGroup);
         }
-        return groupHashMap;
+        return map;
     }
 
-    private static void evalAlgorithms(Map<AllocationAlgorithm, Group> map, List<Task> newTasks) {
-        for (Map.Entry<AllocationAlgorithm, Group> entry : map.entrySet()) {
-            Group group = entry.getValue();
-            group.addTasks(newTasks);
-            entry.getKey().assignTasks(group);
+    private static void evalAlgorithms(Map<String, Group> map, AllocationAlgorithm[] algorithms, List<Task> newTasks) {
+        for (AllocationAlgorithm alg : algorithms) {
+            if (map.containsKey(alg.getName())) {
+                Group group = map.get(alg.getName());
+                group.addTasks(newTasks);
+                alg.assignTasks(group);
+            }
         }
     }
 }
