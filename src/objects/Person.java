@@ -17,8 +17,8 @@ public class Person {
         return name;
     }
 
-    public Map<TaskType, Double> getPreferences() {
-        return preferences;
+    public Map<TaskType, Double> getTaskTypeDisutilityMap() {
+        return taskTypeDisutilityMap;
     }
 
     public String toString() {return name;}

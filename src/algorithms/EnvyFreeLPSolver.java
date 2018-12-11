@@ -38,7 +38,7 @@ public abstract class EnvyFreeLPSolver extends LPSolver {
                 mip.add(constraint);
             }
         }
-        for (int l = 0; i < m; l++) {
+        for (int l = 0; l < m; l++) {
             Constraint constraint = new Constraint(CompareType.EQ, 1);
             for (int i = 0; i < n; i++) {
                 constraint.addTerm(1, x[i][l]);

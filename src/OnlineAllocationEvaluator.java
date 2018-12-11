@@ -1,17 +1,13 @@
 import algorithms.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.stream.JsonReader;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.helper.HelpScreenException;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import objects.Group;
-import objects.Person;
 import objects.Task;
-import org.apache.commons.lang3.StringEscapeUtils;
 import tools.EnvyGrapher;
 import tools.FormParser;
 
@@ -42,13 +38,18 @@ public class OnlineAllocationEvaluator {
             String groupName = arguments.getString("name");
 
             Map<AllocationAlgorithm, Group> groupMap;
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .setPrettyPrinting()
+                    .serializeNulls()
+                    .enableComplexMapKeySerialization()
+                    .create();
 
             if (!jsonInput) {
                 // We are creating a new set of preferences.
                 Group newGroup = new Group(preferenceFilename, groupName);
                 int timeSteps = 200, groupSize = newGroup.getPersonTasksMap().size();
-                groupMap = instantiateAlgorithms(newGroup, timeSteps, groupSize);
+                groupMap = instantiateAlgorithms(newGroup, timeSteps, groupSize, gson);
             } else {
                 Type type = new TypeToken<Map<AllocationAlgorithm, Group>>(){}.getType();
                 groupMap = gson.fromJson(new FileReader(preferenceFilename), type);
@@ -68,7 +69,6 @@ public class OnlineAllocationEvaluator {
 
             // save in json
             String json = gson.toJson(groupMap);
-
             FileOutputStream fos = new FileOutputStream(new File(groupName + ".json"));
             fos.write(json.getBytes());
             fos.close();
@@ -88,14 +88,8 @@ public class OnlineAllocationEvaluator {
         return parser.parseArgs(args);
     }
 
-    private static Map<AllocationAlgorithm, Group> instantiateAlgorithms(Group group, int timeSteps, int numPeople) {
+    private static Map<AllocationAlgorithm, Group> instantiateAlgorithms(Group group, int timeSteps, int numPeople, Gson gson) {
         AllocationAlgorithm[] algs = {new RandomAllocation()};//, new GreedySingleAllocation(), new OnlineSingleAllocation(timeSteps, numPeople)};
-        Gson gson = new GsonBuilder()
-                .disableHtmlEscaping()
-                .setPrettyPrinting()
-                .serializeNulls()
-                .enableComplexMapKeySerialization()
-                .create();
         HashMap<AllocationAlgorithm, Group> groupHashMap = new HashMap<>();
         Type type = new TypeToken<Group>(){}.getType();
         for (AllocationAlgorithm alg : algs) {
