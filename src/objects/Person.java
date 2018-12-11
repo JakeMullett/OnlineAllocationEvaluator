@@ -4,11 +4,11 @@ import java.util.Map;
 
 public class Person {
     private String name;
-    private Map<TaskType, Double> preferences;
+    private Map<TaskType, Double> taskTypeDisutilityMap;
 
     public Person(String newName, Map<TaskType, Double> prefs) {
         name = newName;
-        preferences = prefs;
+        taskTypeDisutilityMap = prefs;
     }
 
     public String getName() {
@@ -16,7 +16,7 @@ public class Person {
     }
 
     public Double getPreference(TaskType task) {
-        return preferences.get(task);
+        return taskTypeDisutilityMap.get(task);
     }
 
 }
