@@ -21,8 +21,8 @@ public class EnvyFreeLPSolver extends LPSolver {
         Variable[][] x1 = new Variable[n][m];
         for (int i = 0; i < n; i++) {
             for (int l = 0; l < m; l++) {
-                x0[i][l] = new Variable("x0" + i + "," + l, VarType.BOOLEAN, 0, 1);
-                x1[i][l] = new Variable("x1" + i + "," + l, VarType.BOOLEAN, 0, 1);
+                x0[i][l] = new Variable("x0," + i + "," + l, VarType.BOOLEAN, 0, 1);
+                x1[i][l] = new Variable("x1," + i + "," + l, VarType.BOOLEAN, 0, 1);
                 mip.add(x0[i][l]);
                 mip.add(x1[i][l]);
                 mip.addObjectiveTerm(1, x[i][l]);

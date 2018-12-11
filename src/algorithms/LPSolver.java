@@ -33,7 +33,7 @@ public abstract class LPSolver {
         mip = new MIP();
         for (int i = 0; i < n; i++) {
             for (int l = 0; l < m; l++) {
-                x[i][l] = new Variable("x" + i + "," + l, VarType.DOUBLE, 0, 1);
+                x[i][l] = new Variable("x," + i + "," + l, VarType.DOUBLE, 0, 1);
                 v[i][l] = personList.get(i).getPreference(unallocatedTasks.get(l).getType());
                 mip.add(x[i][l]);
             }

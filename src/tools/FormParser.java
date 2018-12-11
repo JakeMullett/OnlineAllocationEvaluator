@@ -13,7 +13,7 @@ import java.util.*;
 
 public class FormParser {
 
-    private static final int NAME_COL = 1; // for reading from a google form
+    private static final int NAME_COL = 0; // for reading from a google form
     private static final int DATE_COL = 0; // for getting tasks from a csv
     private static final SimpleDateFormat CSV_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 

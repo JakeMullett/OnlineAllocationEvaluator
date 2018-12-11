@@ -2,7 +2,7 @@ package objects;
 
 public enum TaskType {
 
-    PARTYMONITOR("Party Monitoring"), CLEAN("Cleaning"), SETUP("Setting Up");
+    PARTYMONITOR("Party Monitoring"), CLEAN("Cleaning Up Event"), SETUP("Setting Up Event"), SPECIAL("Special Event Attendance");
     // declaring private variable for getting values
     private String formName;
 

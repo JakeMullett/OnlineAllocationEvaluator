@@ -40,6 +40,7 @@ public class OnlineAllocationEvaluator {
     public static void main(String[] args) throws ArgumentParserException, IOException, ParseException {
         try {
             Namespace arguments = getArgs(args);
+           // String cwd = System.getProperty("user.dir") + "\\";
             String preferenceFilename = arguments.getString("pref_filename");
             String taskFilename = arguments.getString("task_filename");
             boolean jsonInput = arguments.getString("pref_input").equals("json");
@@ -82,8 +83,12 @@ public class OnlineAllocationEvaluator {
              * Graph each algorithm's pairwise envy.
              */
             FileOutputStream manifest = new FileOutputStream(new File(groupName + "manifest.txt"));
+            int max = 0;
+            for (Group g : groupMap.values()) {
+                max = Math.max(max, MetricsCalculator.getMaxEnvy(g).intValue());
+            }
             for (Map.Entry<String, Group> entry : groupMap.entrySet()) {
-                EnvyGrapher.graph(entry.getValue(), entry.getKey());
+                EnvyGrapher.graph(entry.getValue(), entry.getKey(), max);
                 String disutility = "Total disutility for algorithm " + entry.getKey() + " is: " + MetricsCalculator.calculateTotalDisutility(entry.getValue())+ "\n";
                 String avgEnvy = "Average pairwise envy for algorithm " + entry.getKey() + " is: " + MetricsCalculator.calculateTotalEnvy(entry.getValue())/entry.getValue().getPersonTasksMap().size()+ "\n";
                 String pwEnvy = "Maximum pairwise envy for algorithm " + entry.getKey() + " is: " + MetricsCalculator.getMaxEnvy(entry.getValue())+ "\n\n";

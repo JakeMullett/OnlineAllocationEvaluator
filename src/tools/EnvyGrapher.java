@@ -16,15 +16,14 @@ import static tools.MetricsCalculator.getPeople;
 public class EnvyGrapher {
     // this class will take in a set of preferences and graph the pairwise envy of each agent
 
-    public static void graph(Group group, String algorithmName) {
+    public static void graph(Group group, String algorithmName, int maxEnvy) {
         String fileName = group.getGroupName() + algorithmName + ".jpg";
         File fileDest = new File(fileName);
         Map<Person, List<Task>> allocations = group.getPersonTasksMap();
         Person[] people = getPeople(allocations);
         double[][] zValues = MetricsCalculator.calculateEnvyGraph(group);
         removeNegatives(zValues);
-        int max = MetricsCalculator.getMaxEnvy(group).intValue();
-        HeatChart hc = new HeatChart(zValues, 0, max);
+        HeatChart hc = new HeatChart(zValues, 0, maxEnvy);
         hc.setXValues(people);
         hc.setYValues(people);
         hc.setChartMargin(50);
